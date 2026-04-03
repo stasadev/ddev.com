@@ -1,0 +1,165 @@
+---
+import Terminal from "@components/Terminal.astro"
+import Tabs from "@components/Tabs.astro"
+import CommunityCTA from "./CommunityCTA.astro"
+import Examples from "./Examples.astro"
+
+export interface Props {
+  latestVersion: string
+}
+
+const { latestVersion } = Astro.props
+---
+
+<div class="prose dark:prose-invert">
+  <p class="text-gray-600 mb-16 dark:text-slate-400">
+    We’ll install Docker and DDEV with your package manager, as detailed in the <a
+      href="https://docs.ddev.com/en/stable/users/install/ddev-installation/#linux"
+      target="_blank"
+      >Linux installation docs</a
+    >.
+  </p>
+
+  <h2 class="text-3xl mt-24">
+    <small class="block font-mono text-xs text-gray-500">1/4</small>Install
+    Docker
+  </h2>
+
+  <div class="prose py-5 dark:prose-invert">
+    <p>
+      Docker installation on Linux depends on what flavor you’re using.
+      It’s best to use your native package repository (<code>apt</code>, <code>yum</code>, etc.):
+      <ul>
+        <li><a href="https://docs.docker.com/install/linux/docker-ce/ubuntu/" target="_blank">Ubuntu</a></li>
+        <li><a href="https://docs.docker.com/install/linux/docker-ce/centos/" target="_blank">CentOS</a></li>
+        <li><a href="https://docs.docker.com/install/linux/docker-ce/debian/" target="_blank">Debian</a></li>
+        <li><a href="https://docs.docker.com/install/linux/docker-ce/fedora/" target="_blank">Fedora</a></li>
+        <li><a href="https://docs.docker.com/install/linux/docker-ce/binaries/" target="_blank">binaries</a></li>
+      </ul>
+    </p>
+    <p>
+      Linux installation <strong>absolutely</strong> requires adding your Linux user to the <code>docker</code> group,
+      and configuring the Docker daemon to start at boot.
+      See <a href="https://docs.docker.com/engine/install/linux-postinstall/" target="_blank">Post-installation steps for Linux</a>.
+    </p>
+  </div>
+</div>
+
+<div class="prose dark:prose-invert">
+  <h2 class="text-3xl mt-24">
+    <small class="block font-mono text-xs text-gray-500">2/4</small>Install DDEV
+  </h2>
+
+  <Tabs order={["Debian/Ubuntu","Fedora/CentOS","Arch","Install Script"]}>
+    <Fragment slot="Debian/Ubuntu">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal
+          type="ubuntu"
+          code={`$ sudo sh -c 'echo ""'
+$ sudo apt-get update && sudo apt-get install -y curl
+$ sudo install -m 0755 -d /etc/apt/keyrings
+$ curl -fsSL https://pkg.ddev.com/apt/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/ddev.gpg > /dev/null
+$ sudo chmod a+r /etc/apt/keyrings/ddev.gpg
+$ sudo sh -c 'echo ""'
+$ echo "deb [signed-by=/etc/apt/keyrings/ddev.gpg] https://pkg.ddev.com/apt/ * *" | sudo tee /etc/apt/sources.list.d/ddev.list >/dev/null
+$ sudo sh -c 'echo ""'
+$ sudo apt-get update && sudo apt-get install -y ddev
+`}
+        />
+      </div>
+    </Fragment>
+    <Fragment slot="Fedora/CentOS">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal
+          type="ubuntu"
+          code={`$ sudo sh -c 'echo ""'
+$ echo '[ddev]\nname=ddev
+baseurl=https://pkg.ddev.com/yum/
+gpgcheck=0
+enabled=1' | perl -p -e 's/^ +//' | sudo tee /etc/yum.repos.d/ddev.repo >/dev/null
+$ sudo sh -c 'echo ""'
+$ sudo dnf install --refresh ddev
+`}
+        />
+      </div>
+    </Fragment>
+    <Fragment slot="Arch">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal
+          type="ubuntu"
+          code={`$ yay -S ddev-bin`}
+        />
+      </div>
+    </Fragment>
+    <Fragment slot="Install Script">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal
+          type="ubuntu"
+          code={`$ curl -fsSL https://ddev.com/install.sh | bash`}
+        />
+      </div>
+    </Fragment>
+  </Tabs>
+
+</div>
+
+
+<div class="prose dark:prose-invert">
+  <p>Confirm that you’ve now got DDEV installed: 🎉</p>
+  <Terminal type="ubuntu" code={`$ ddev -v\nddev version ${latestVersion}`} />
+
+  <h2 class="text-3xl mt-24">
+    <small class="block font-mono text-xs text-gray-500">3/4</small>Run <code>mkcert -install</code>
+  </h2>
+
+  <p>Running <code>mkcert -install</code> is a one-time operation. It allows your browser to trust the HTTPS/TLS certificates served by DDEV.</p>
+  <Terminal type="ubuntu" code={`$ mkcert -install
+Created a new local CA 💥
+The local CA is now installed in the system trust store! ⚡️
+The local CA is now installed in the Firefox and/or Chrome/Chromium trust store (requires browser restart)! 🦊`} />
+</div>
+
+<Examples itemNumber="4/4" terminalType="ubuntu" terminalSymbol="$" />
+
+<div class="prose dark:prose-invert">
+  <p></p>
+
+  <p>
+    To <a href="https://docs.ddev.com/en/stable/users/usage/uninstall/" target="_blank">uninstall</a> DDEV, first clean up its Docker bits and delete its files from
+    your system:
+  </p>
+
+  <Terminal
+    type="ubuntu"
+    code={`$ ddev clean --all\n$ ddev hostname --remove-inactive\n$ rm -r ~/.ddev`}
+  />
+
+  <p>
+    Then remove the <code>ddev</code> binary however you installed it:
+  </p>
+
+  <Tabs order={["Debian/Ubuntu","Fedora/CentOS","Arch","Install Script"]}>
+    <Fragment slot="Debian/Ubuntu">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal type="ubuntu" code={`$ sudo apt-get remove ddev`} />
+      </div>
+    </Fragment>
+    <Fragment slot="Fedora/CentOS">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal type="ubuntu" code={`$ sudo dnf remove ddev`} />
+      </div>
+    </Fragment>
+    <Fragment slot="Arch">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal type="ubuntu" code={`$ yay -R ddev-bin`} />
+      </div>
+    </Fragment>
+    <Fragment slot="Install Script">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal type="ubuntu" code={`$ sudo rm /usr/local/bin/ddev`} />
+      </div>
+    </Fragment>
+  </Tabs>
+
+  <CommunityCTA />
+</div>

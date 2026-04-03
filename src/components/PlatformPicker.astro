@@ -1,0 +1,187 @@
+---
+/**
+ * Provides a styled input for choosing “Mac”, “Windows”, or “Linux” and attempts
+ * to toggle corresponding content elements having `data-platform="mac"`,
+ * `data-platform="windows"`, `data-platform="linux"`, or `data-platform="cloud"`.
+ *
+ * Used on the “Get Started with DDEV” page.
+ */
+import Icon from "./Icon.astro"
+import { CloudIcon } from "@heroicons/react/24/solid/index.js"
+
+export interface Props {
+  heading?: string
+  inputName?: string
+}
+
+const { heading, inputName = "platform" } = Astro.props
+---
+
+<script>
+  const hash = window.location.hash ?? null
+  const platformRadioButtons = document.querySelectorAll(
+    'input[name="platform"]'
+  )
+  const instructionDivs = document.querySelectorAll("div[data-platform]")
+
+  let options = new Array()
+  let selectedPlatform
+
+  /**
+   * Show the instruction content for the specified operating system.
+   */
+  const showInstructions = (platform) => {
+    instructionDivs.forEach((element) => {
+      if (element.getAttribute("data-platform") === platform) {
+        element.classList.remove("hidden")
+      } else {
+        element.classList.add("hidden")
+      }
+    })
+  }
+
+  /**
+   * Select a platform, update the controls to reflect the selection,
+   * and show the appropriate content for that platform.
+   */
+  const selectPlatform = (platform) => {
+    platformRadioButtons.forEach((element) => {
+      element.checked = element.value === platform
+    })
+    showInstructions(platform)
+  }
+
+  /**
+   * Autodetect the visitor’s operating system.
+   * Returns `'mac'`, `'windows'`, `'linux'`, or `null`.
+   *
+   * Adapted from https://stackoverflow.com/a/38241481/897279
+   */
+  function getOS() {
+    var userAgent = window.navigator.userAgent,
+      platform =
+        window.navigator?.userAgentData?.platform || window.navigator.platform,
+      macosPlatforms = ["macOS", "Macintosh", "MacIntel", "MacPPC", "Mac68K"],
+      windowsPlatforms = ["Win32", "Win64", "Windows", "WinCE"],
+      os = null
+
+    if (macosPlatforms.indexOf(platform) !== -1) {
+      os = "mac"
+    } else if (windowsPlatforms.indexOf(platform) !== -1) {
+      os = "windows"
+    } else if (/Linux/.test(platform)) {
+      os = "linux"
+    }
+
+    return os
+  }
+
+  /**
+   * Add input event listeners for having a selection display the
+   * relevant page content panel.
+   */
+  platformRadioButtons.forEach((element) => {
+    options.push(element.getAttribute("value"))
+    element.addEventListener("change", (event) => {
+      selectedPlatform = event.target.value
+      showInstructions(selectedPlatform)
+    })
+  })
+
+  /**
+   * First look for an explicit options in a URL fragment, then fall
+   * back to OS autodetection.
+   */
+  if (hash) {
+    const bareHash = hash.replace("#", "")
+    if (options.includes(bareHash)) {
+      selectPlatform(bareHash)
+    }
+  } else {
+    const os = getOS()
+
+    if (os) {
+      selectPlatform(os)
+    }
+  }
+</script>
+
+<div class="choose px-6 lg:px-0 dark:text-slate-400">
+  {heading && <h2 class="dark:text-white">{heading}</h2>}
+  <div class="choose-platform flex">
+    <div class="w-full">
+      <input
+        id="platform-mac"
+        type="radio"
+        name={inputName}
+        value="mac"
+        class="hidden"
+      />
+      <label
+        class="block w-full text-center border-y border-l rounded-l py-4 select-none cursor-pointer dark:border-slate-700"
+        for="platform-mac"
+      >
+        <span class="hidden md:inline-block w-4 h-4 relative" style="top: 2px"
+          ><Icon name="Apple" />
+        </span>
+        Mac</label
+      >
+    </div>
+    <div class="w-full">
+      <input
+        id="platform-windows"
+        name={inputName}
+        type="radio"
+        value="windows"
+        class="hidden"
+      />
+      <label
+        class="block w-full text-center border-y border-l py-4 select-none cursor-pointer dark:border-slate-700"
+        for="platform-windows"
+      >
+        <span class="hidden md:inline-block w-4 h-4 relative" style="top: 2px"
+          ><Icon name="Windows" />
+        </span>
+        Windows</label
+      >
+    </div>
+    <div class="w-full">
+      <input
+        id="platform-linux"
+        type="radio"
+        name={inputName}
+        value="linux"
+        class="hidden"
+      />
+      <label
+        class="block w-full text-center border-y border-l py-4 select-none cursor-pointer dark:border-slate-700"
+        for="platform-linux"
+      >
+        <span class="hidden md:inline-block w-4 h-4 relative" style="top: 2px"
+          ><Icon name="Linux" />
+        </span>
+
+        Linux</label
+      >
+    </div>
+    <div class="w-full">
+      <input
+        id="platform-cloud"
+        type="radio"
+        name={inputName}
+        value="cloud"
+        class="hidden"
+      />
+      <label
+        class="block w-full text-center border-y border-x rounded-r py-4 select-none cursor-pointer dark:border-slate-700"
+        for="platform-cloud"
+      >
+        <span class="hidden md:inline-block w-4 h-4 relative" style="top: 2px"
+          ><CloudIcon />
+        </span>
+
+        Cloud</label
+      >
+    </div>
+  </div>
+</div>

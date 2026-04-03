@@ -1,0 +1,225 @@
+---
+/**
+ * You must generate a static build (`npm run build`) before you can test this page locally!
+ */
+import Layout from "../layouts/Layout.astro"
+import Heading from "../components/Heading.astro"
+
+const title = `Search`
+---
+
+<script>
+  import { loadIndex } from "@barnabask/astro-minisearch"
+
+  const batchSize = 10
+  const env = process.env.NODE_ENV || "production"
+
+  // Load the statically-built file in the `dist/` directory for local development
+  const indexPath =
+    env === "development" ? "../../dist/search.json" : "/search.json"
+
+  const inputElement = document.getElementById("search-keywords")
+  const resultsContainer = document.getElementById("results")
+  const response = await fetch(indexPath)
+  const searchData = await response.json()
+  const searchIndex = loadIndex(searchData, {
+    storeFields: ["title", "heading", "pubDate", "modifiedDate"],
+  })
+
+  let selectedResultIndex: number = -1
+  let currentKeywords: string
+  let allResults: any[] = []
+  let shownCount = 0
+
+  const sentinel = document.createElement("div")
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting) showMore()
+    },
+    { rootMargin: "100px" },
+  )
+
+  const getResults = (keywords: string) => {
+    if (!searchIndex) {
+      return []
+    }
+
+    const results = searchIndex.search(keywords, {
+      fuzzy: 0.2,
+      prefix: true,
+      boost: { title: 2 }
+    })
+
+    const hasTitleMatch = (result) =>
+      Object.values(result.match).some((fields) => fields.includes("title"))
+
+    // Sort: blog posts first, then title matches by date desc, then body matches by date desc
+    results.sort((a, b) => {
+      const aIsPost = isBlogPost(a.id)
+      const bIsPost = isBlogPost(b.id)
+
+      // Primary sort: blog posts before pages
+      if (aIsPost && !bIsPost) return -1
+      if (!aIsPost && bIsPost) return 1
+
+      // Secondary sort: title matches before body-only matches
+      const aTitleMatch = hasTitleMatch(a)
+      const bTitleMatch = hasTitleMatch(b)
+      if (aTitleMatch && !bTitleMatch) return -1
+      if (!aTitleMatch && bTitleMatch) return 1
+
+      // Tertiary sort: by date (newest first), preferring modifiedDate
+      const aDate = a.modifiedDate || a.pubDate
+      const bDate = b.modifiedDate || b.pubDate
+      if (aDate && bDate) {
+        return new Date(bDate).getTime() - new Date(aDate).getTime()
+      }
+      if (aDate && !bDate) return -1
+      if (!aDate && bDate) return 1
+      return 0
+    })
+
+    return results
+  }
+
+  const renderResult = (result) => {
+    const resulturl = window.location.origin + result.id.replace(/^\/+/, "/")
+    const isPost = isBlogPost(result.id)
+    const formatDate = (d) =>
+      d
+        ? new Date(d).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        : ""
+    const formattedPubDate = formatDate(result.pubDate)
+    const formattedModifiedDate =
+      result.modifiedDate && result.modifiedDate !== result.pubDate
+        ? formatDate(result.modifiedDate)
+        : ""
+
+    return `
+      <a href="${resulturl}" class="border rounded w-full flex items-center content-center my-2 p-4 hover:shadow-sm hover:border-blue-300 dark:border-slate-700">
+        <div class="flex-1">
+          <h2 class="font-bold dark:text-white">${result.title}</h2>
+        </div>
+        <div class="text-right shrink-0 ml-4 text-sm">
+          ${isPost && formattedPubDate ? `<span class="text-gray-600 dark:text-gray-400">${formattedPubDate}${formattedModifiedDate ? ` (upd. ${formattedModifiedDate})` : ""} &middot; </span>` : ""}<span class="font-mono dark:text-slate-500">${getResultLabelFromPath(result.id)}</span>
+        </div>
+      </a>
+    `
+  }
+
+  const showMore = () => {
+    sentinel.remove()
+    observer.disconnect()
+
+    const batch = allResults.slice(shownCount, shownCount + batchSize)
+    resultsContainer.insertAdjacentHTML("beforeend", batch.map(renderResult).join(""))
+    shownCount += batch.length
+
+    if (shownCount < allResults.length) {
+      resultsContainer.appendChild(sentinel)
+      observer.observe(sentinel)
+    }
+  }
+
+  const updateResults = (keywords: string) => {
+    currentKeywords = keywords
+    allResults = getResults(keywords)
+    shownCount = 0
+    selectedResultIndex = -1
+    resultsContainer.innerHTML = ""
+    showMore()
+  }
+
+  const focusResult = () => {
+    const container = document.getElementById("results")
+    const element = container.querySelectorAll(`a`)
+
+    element[selectedResultIndex].focus()
+  }
+
+  inputElement.addEventListener("keyup", () => {
+    if (inputElement.value !== currentKeywords) {
+      updateResults(inputElement.value)
+    }
+  })
+
+  inputElement.addEventListener("search", () => {
+    if (inputElement.value !== currentKeywords) {
+      updateResults(inputElement.value)
+    }
+  })
+
+  document.addEventListener("keydown", function (event) {
+    switch (event.key) {
+      case "ArrowUp":
+        selectedResultIndex =
+          selectedResultIndex > 1 ? selectedResultIndex - 1 : 0
+        focusResult()
+        break
+      case "ArrowDown":
+        selectedResultIndex =
+          selectedResultIndex < shownCount - 1
+            ? selectedResultIndex + 1
+            : shownCount - 1
+        focusResult()
+        break
+      case "Escape":
+        inputElement.value = ""
+        updateResults("")
+        inputElement.focus()
+        break
+    }
+  })
+
+  /**
+   * Returns true if the path is a blog post (not a listing or index page).
+   */
+  const isBlogPost = (path) => {
+    return path.includes("/blog/") &&
+      !(path.endsWith("/blog/") ||
+        path.includes("/blog/author/") ||
+        path.includes("/blog/category/"))
+  }
+
+  /**
+   * Returns a label for the post item based on its path.
+   */
+  const getResultLabelFromPath = (path) => {
+    return isBlogPost(path) ? "Blog Post" : "Page"
+  }
+
+  if (inputElement.value) {
+    updateResults(inputElement.value)
+  }
+</script>
+
+<Layout
+  title={title}
+  noindex={true}
+  description={`Search pages and blog posts on ddev.com.`}
+>
+  <main class="max-w-4xl mx-auto mb-24">
+    <Heading title={title} />
+    <div class="max-w-3xl px-6 lg:px-0">
+      <label for="search-keywords" class="sr-only">Search Keywords</label>
+      <input
+        id="search-keywords"
+        type="search"
+        class="border rounded px-4 py-2 text-lg w-full dark:bg-transparent dark:border-slate-700 dark:text-white"
+        autofocus
+        autocomplete="off"
+      />
+      <div id="results"></div>
+      <noscript>
+        <p class="mt-4">
+          Search requires JavaScript. You can <a href="/blog/" class="underline">browse all posts</a> or filter by <a href="/blog/category/" class="underline">category</a>.
+        </p>
+      </noscript>
+    </div>
+  </main>
+</Layout>

@@ -1,0 +1,69 @@
+---
+/**
+ * The large, leading copy and image used on the homepage.
+ */
+import Badge from "@components/Badge.astro"
+import CtaButton from "@components/CtaButton.astro"
+import Icon from "@components/Icon.astro"
+import AnimatedTerminal from "./AnimatedTerminal.astro"
+import { CloudIcon } from "@heroicons/react/24/solid/index.js"
+---
+
+<div class="mt-2 pt-8 sm:mt-12 sm:pt-24 pb-32 relative overflow-x-hidden">
+  <div class="z-10 max-w-4xl mx-auto relative">
+    <div class="max-w-2xl px-6 lg:px-0">
+      <h1 class="text-5xl font-bold dark:text-white">
+        Docker-based PHP development environments.
+      </h1>
+      <h2 class="text-2xl my-6 dark:text-slate-400">
+        Container superpowers with zero required Docker skills: environments in
+        minutes, multiple concurrent projects, and less time to deployment.
+      </h2>
+
+      <div
+        class="my-8 flex-cols space-y-4 md:flex md:space-x-4 md:space-y-0 md:w-3/4"
+      >
+        <CtaButton text="Get Started" href="/get-started" />
+        <CtaButton
+          text="Documentation"
+          href="https://docs.ddev.com/"
+          type="hollow"
+          target="_blank"
+        />
+      </div>
+    </div>
+
+    <div class="mt-4 text-slate-500 max-w-2xl px-6 lg:px-0">
+      <ul class="flex flex-wrap space-x-7 justify-center md:justify-start dark:text-slate-400">
+        <li class="whitespace-nowrap my-1">
+          <span class="w-4 h-4 inline-block mr-1 relative top-[2px]"
+            ><Icon name="Apple" />
+          </span>
+          macOS <Badge>M Series</Badge><Badge>Intel</Badge>
+        </li>
+        <li class="whitespace-nowrap my-1">
+          <span class="w-4 h-4 inline-block mr-1 relative top-[2px]"
+            ><Icon name="Windows" />
+          </span>Windows
+        </li>
+        <li class="whitespace-nowrap my-1">
+          <span class="w-4 h-4 inline-block mr-1 relative top-[2px]"
+            ><Icon name="Linux" />
+          </span>Linux
+        </li>
+        <li class="whitespace-nowrap my-1">
+          <span class="w-4 h-4 inline-block mr-1 relative top-[2px]"
+            ><CloudIcon />
+          </span>Cloud
+          <Badge>Codespaces</Badge>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="w-full h-72 absolute top-0 z-0" style="right: -40rem;">
+    <div class="mx-auto h-full" style="max-width: 49.25rem;">
+      <AnimatedTerminal />
+    </div>
+  </div>
+</div>

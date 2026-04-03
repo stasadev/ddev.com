@@ -1,0 +1,57 @@
+---
+import { getContributors } from "../lib/api.js"
+import { Image } from 'astro:assets';
+
+import FeaturedSponsors from "./FeaturedSponsors.astro"
+import Sponsors from "./Sponsors.astro"
+
+const contributors = await getContributors()
+---
+
+<div class="relative mt-36 mb-24 px-8">
+  <div class="relative max-w-5xl mx-auto">
+    <div id="supporters" class="text-center mb-12">
+      <h2 class="text-3xl font-bold text-gray-900 sm:text-4xl dark:text-white">
+        Our Wonderful Supporters
+      </h2>
+    </div>
+
+    <h3 class="mt-24 mb-8 text-base font-mono text-navy-300 text-center dark:text-navy-100">
+      Featured Sponsors
+    </h3>
+    <div class="max-w-4xl mx-auto flex flex-wrap justify-center">
+      <FeaturedSponsors />
+    </div>
+
+    <h3 class="mt-24 mb-8 text-base font-mono text-navy-300 text-center dark:text-navy-100">
+      GitHub Sponsors
+    </h3>
+    <div class="max-w-4xl mx-auto flex flex-wrap justify-center mb-8">
+      <Sponsors size="large" align="center" />
+    </div>
+
+    <h3 class="mt-24 mb-8 text-base font-mono text-navy-300 text-center dark:text-navy-100">
+      GitHub Contributors
+    </h3>
+    <div class="max-w-5xl mx-auto flex flex-wrap justify-center">
+      {
+        contributors.map((contributor) => (
+          <a
+            class="block w-12 h-12 relative overflow-hidden"
+            title={contributor.login}
+            href={contributor.html_url}
+            target="_blank"
+          >
+            <Image
+              src={contributor.avatar_url}
+              alt={`${contributor.login} GitHub avatar`}
+              width={100}
+              height={100}
+              class="block w-full h-full"
+            />
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</div>

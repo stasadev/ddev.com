@@ -1,0 +1,34 @@
+---
+/**
+ * Supported framework names and logos used on the homepage.
+ */
+const logos = [
+  { name: "Drupal", src: "/logos/drupal.svg", quickstart: "drupal", extraClasses: [] },
+  { name: "WordPress", src: "/logos/wordpress.svg", quickstart: "wordpress", extraClasses: [] },
+  { name: "TYPO3", src: "/logos/typo3.svg", quickstart: "typo3", extraClasses: [] },
+  { name: "Magento 2", src: "/logos/magento.svg", quickstart: "magento-2",extraClasses: [] },
+  { name: "Backdrop", src: "/logos/backdrop.svg", quickstart: "backdrop", extraClasses: [] },
+  { name: "Craft CMS", src: "/logos/craft.svg", quickstart: "craft-cms", extraClasses: ["w-7"] },
+  { name: "Laravel", src: "/logos/laravel.svg", quickstart: "laravel", extraClasses: ["w-7"] },
+]
+---
+
+<div class="opacity-60">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-center content-center flex-wrap">
+      {
+        logos.map((logo) => (
+          <div class="px-12 py-6">
+            <a href={`https://docs.ddev.com/en/stable/users/quickstart/#${logo.quickstart}`} target="_blank" title={logo.name}>
+              <img
+                class={["h-12 dark:invert", ...logo.extraClasses].join(" ")}
+                src={logo.src}
+                alt={`${logo.name} logo`}
+              />
+            </a>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>

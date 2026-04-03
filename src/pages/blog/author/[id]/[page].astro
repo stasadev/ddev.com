@@ -1,0 +1,70 @@
+---
+import { getCollection, render } from "astro:content"
+import Layout from "../../../../layouts/Layout.astro"
+import BlogPostGrid from "../../../../components/BlogPostGrid.astro"
+import { BLOG_PAGE_SIZE } from "../../../../const"
+
+export async function getStaticPaths() {
+  const authors = await getCollection("authors")
+  const posts = await getCollection("blog")
+
+  const paths = []
+
+  for (const author of authors) {
+    const authorPosts = posts
+      .filter((post) => post.data.author === author.data.name)
+      .sort((a, b) => {
+        return new Date(a.data.pubDate) > new Date(b.data.pubDate) ? -1 : 1
+      })
+
+    const totalPages = Math.ceil(authorPosts.length / BLOG_PAGE_SIZE)
+
+    for (let page = 2; page <= totalPages; page++) {
+      paths.push({
+        params: { id: author.id, page: String(page) },
+        props: {
+          author,
+          posts: authorPosts.slice((page - 1) * BLOG_PAGE_SIZE, page * BLOG_PAGE_SIZE),
+          currentPage: page,
+          prevUrl: page === 2 ? `/blog/author/${author.id}/` : `/blog/author/${author.id}/${page - 1}/`,
+          nextUrl:
+            page < totalPages
+              ? `/blog/author/${author.id}/${page + 1}/`
+              : undefined,
+        },
+      })
+    }
+  }
+
+  return paths
+}
+
+const { author, posts, currentPage, prevUrl, nextUrl } = Astro.props
+
+const title = `Posts by ${author.data.name}`
+const { Content } = await render(author)
+---
+
+<Layout
+  title={`${title}, Page ${currentPage}`}
+  description={`List of blog posts by ${author.data.name}.`}
+  noindex={true}
+>
+  <main class="max-w-4xl mx-auto mb-24">
+    <div class="lg:flex lg:space-x-12 py-24 px-6 lg:px-0">
+      <div>
+        <p class="text-sm font-mono mb-4">
+          <a href="/blog/author" class="text-indigo-600 dark:text-cyan-300 hover:underline">
+            &larr; All authors
+          </a>
+        </p>
+        <h1 class="font-bold text-4xl dark:text-white">{author.data.name}</h1>
+      </div>
+      <div class="prose mt-6 lg:mt-0 dark:prose-invert">
+        <Content />
+      </div>
+    </div>
+
+    <BlogPostGrid posts={posts} prevUrl={prevUrl} nextUrl={nextUrl} />
+  </main>
+</Layout>

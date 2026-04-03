@@ -1,0 +1,39 @@
+---
+/**
+ * A single card used for displaying repository details, including
+ * auto-fetched stargazer count.
+ */
+import { StarIcon } from "@heroicons/react/24/outline/index.js"
+import { getRepoDetails } from "../lib/api"
+
+export interface Props {
+  name: string
+  description: string
+}
+
+const { name, description } = Astro.props
+
+const repoData = await getRepoDetails(name)
+---
+
+<a
+  href={`https://github.com/${name}`}
+  target="_blank"
+  class="border hover:border-blue-300 rounded-md shadow-sm hover:shadow-lg dark:border-slate-700"
+>
+  <div class="">
+    <div class="flex justify-between border-b px-3 py-3 dark:border-slate-700">
+      <h3 class="text-sm font-bold">{name}</h3>
+      <div class="font-mono text-sm" style="margin-top: 2px">
+        <StarIcon
+          className="w-4 h-4 inline-block relative"
+          style={{ top: "-1px" }}
+        />{" "}
+        {parseInt(repoData.stargazers_count || 0).toLocaleString("en-US")}
+      </div>
+    </div>
+    <p class="mt-2 text-sm opacity-60 px-3 pt-1 pb-4">
+      {description}
+    </p>
+  </div>
+</a>

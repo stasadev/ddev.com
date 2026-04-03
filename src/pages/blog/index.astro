@@ -1,0 +1,33 @@
+---
+import { getCollection } from "astro:content"
+import Layout from "../../layouts/Layout.astro"
+import BlogPostGrid from "../../components/BlogPostGrid.astro"
+import Heading from "../../components/Heading.astro"
+import { BLOG_DESCRIPTION, BLOG_PAGE_SIZE } from "src/const"
+
+const posts = await getCollection("blog")
+const allPosts = posts.sort((a, b) => {
+  return new Date(a.data.pubDate) > new Date(b.data.pubDate) ? -1 : 1
+})
+
+const title = `Blog Posts`
+const rssUrl = new URL(`/blog/rss.xml`, Astro.site).toString()
+const jsonUrl = new URL(`/blog/feed.json`, Astro.site).toString()
+---
+
+<Layout
+  title={title}
+  description={BLOG_DESCRIPTION}
+  link={[
+    { rel: "alternate", href: rssUrl, type: "application/rss+xml" },
+    { rel: "alternate", href: jsonUrl, type: "application/json" },
+  ]}
+>
+  <main class="max-w-4xl mx-auto">
+    <Heading title={title} subtitle={`DDEV, Docker, and local development.`} />
+    <BlogPostGrid
+      posts={allPosts.slice(0, BLOG_PAGE_SIZE)}
+      nextUrl={allPosts.length > BLOG_PAGE_SIZE ? `/blog/2/` : undefined}
+    />
+  </main>
+</Layout>

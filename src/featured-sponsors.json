@@ -1,0 +1,299 @@
+[
+  {
+    "name": "Upsun",
+    "type": "major",
+    "logo": "/logos/upsun.svg",
+    "darklogo": "/logos/upsun-darkmode.svg",
+    "squareLogo": "/logos/upsun-square.svg",
+    "url": "https://upsun.com",
+    "isLeading": false
+  },
+  {
+    "name": "Tag1",
+    "type": "major",
+    "logo": "/logos/tag1.svg",
+    "darklogo": "/logos/dark-tag1.svg",
+    "squareLogo": "/logos/tag1-square.svg",
+    "url": "https://tag1.com",
+    "isLeading": false
+  },
+  {
+    "name": "i-gelb",
+    "type": "major",
+    "logo": "/logos/i-gelb.svg",
+    "darklogo": "/logos/dark-i-gelb.svg",
+    "squareLogo": "/logos/i-gelb-square.svg",
+    "url": "https://i-gelb.net",
+    "github": "i-gelb",
+    "isLeading": false
+  },
+  {
+    "name": "Institute for Advanced Study",
+    "type": "major",
+    "logo": "/logos/ias.svg",
+    "darklogo": "/logos/ias-dark.svg",
+    "squareLogo": "/logos/ias-square.svg",
+    "url": "https://www.ias.edu/",
+    "isLeading": false
+  },
+  {
+    "name": "b13",
+    "type": "standard",
+    "logo": "/logos/b13.svg",
+    "darklogo": "/logos/b13-darkmode.svg",
+    "squareLogo": "/logos/b13.svg",
+    "url": "https://b13.com/",
+    "github": "b13"
+  },
+  {
+    "name": "Cambrico",
+    "type": "standard",
+    "logo": "/logos/logo-cambrico-color-light-mode_con-nombre.svg",
+    "darklogo": "/logos/logo-cambrico-color-dark-mode_con-nombre.svg",
+    "squareLogo": "/logos/logo-cambrico-color-light-mode_con-nombre.svg",
+    "url": "https://cambrico.net/",
+    "github": "Cambrico"
+  },
+  {
+    "name": "Centarro",
+    "type": "standard",
+    "logo": "/logos/centarro-logo-text-light.svg",
+    "darklogo": "/logos/centarro-logo-text-dark.svg",
+    "squareLogo": "/logos/centarro-logo-light.svg",
+    "url": "https://centarro.io/",
+    "github": "centarro"
+  },
+  {
+    "name": "Fame Helsinki",
+    "type": "standard",
+    "logo": "/logos/fame-logo.svg",
+    "darklogo": "/logos/fame-darkmode.svg",
+    "squareLogo": "/logos/fame-square.svg",
+    "url": "https://fame.fi/",
+    "github": "FameHelsinki"
+  },
+  {
+    "name": "Gizra",
+    "type": "standard",
+    "logo": "/logos/gizra.svg",
+    "darklogo": "/logos/gizra.svg",
+    "squareLogo": "/logos/gizra.svg",
+    "url": "https://gizra.com/",
+    "github": "gizra"
+  },
+  {
+    "name": "mobilistics",
+    "type": "standard",
+    "logo": "/logos/mobilistics.svg",
+    "darklogo": "/logos/mobilistics-dark.svg",
+    "squareLogo": "/logos/mobilistics-square.svg",
+    "url": "https://mobilistics.de/",
+    "github": "mobilistics"
+  },
+  {
+    "name": "optasy",
+    "type": "standard",
+    "logo": "/logos/optasy-full.svg",
+    "darklogo": "/logos/optasy-darkmode.svg",
+    "squareLogo": "/logos/optasy-square.svg",
+    "url": "https://www.optasy.com/",
+    "github": "OPTASY"
+  },
+  {
+    "name": "Redfin Solutions",
+    "type": "standard",
+    "logo": "/logos/redfin-solutions.svg",
+    "darklogo": "/logos/dark-redfin-solutions.svg",
+    "squareLogo": "/logos/redfin-solutions-square.svg",
+    "url": "https://redfinsolutions.com/",
+    "github": "redfinsolutions"
+  },
+  {
+    "name": "MacStadium",
+    "type": "standard",
+    "logo": "/logos/mac-stadium.svg",
+    "darklogo": "/logos/dark-mac-stadium.svg",
+    "squareLogo": "/logos/mac-stadium-square.svg",
+    "url": "https://www.macstadium.com"
+  },
+  {
+    "name": "Lullabot",
+    "type": "standard",
+    "logo": "/logos/lullabot.svg",
+    "darklogo": "/logos/dark-lullabot.svg",
+    "squareLogo": "/logos/lullabot-square.svg",
+    "url": "https://www.lullabot.com",
+    "github": "Lullabot"
+  },
+  {
+    "name": "Craft CMS",
+    "type": "standard",
+    "logo": "/logos/craft-cms.svg",
+    "darklogo": "/logos/craft-cms.svg",
+    "squareLogo": "/logos/craft-cms-square.svg",
+    "url": "https://craftcms.com/",
+    "github": "craftcms"
+  },
+  {
+    "name": "Webikon",
+    "type": "standard",
+    "logo": "/logos/webikon.com.svg",
+    "darklogo": "/logos/webikon.com-dark.svg",
+    "squareLogo": "/logos/webikon.com.svg",
+    "url": "https://github.com/claudiu-cristea",
+    "github": "claudiu-cristea"
+  },
+  {
+    "name": "Passbolt",
+    "type": "standard",
+    "logo": "/logos/passbolt-logo-primary-black.svg",
+    "darklogo": "/logos/passbolt-logo-primary-white.svg",
+    "squareLogo": "/logos/passbolt-logo-square.svg",
+    "url": "https://www.passbolt.com/",
+    "github": "passbolt"
+  },
+  {
+    "name": "JetBrains",
+    "type": "standard",
+    "logo": "/logos/jetbrains.svg",
+    "darklogo": "/logos/jetbrains-dark.svg",
+    "squareLogo": "/logos/jetbrains-square.svg",
+    "url": "https://www.jetbrains.com/community/opensource/?utm_source=ddev.com",
+    "github": "jetbrains"
+  },
+  {
+    "name": "Værsågod",
+    "type": "standard",
+    "logo": "/logos/vaersaagod.svg",
+    "darklogo": "/logos/vaersaagod.svg",
+    "squareLogo": "/logos/vaersaagod.svg",
+    "url": "https://www.vaersaagod.no/en",
+    "github": "vaersaagod"
+  },
+  {
+    "name": "Affinity Bridge",
+    "type": "standard",
+    "logo": "/logos/affinity-bridge.svg",
+    "darklogo": "/logos/affinity-bridge-dark.svg",
+    "squareLogo": "/logos/affinity-bridge-square.svg",
+    "url": "https://affinitybridge.com/",
+    "github": "affinitybridge"
+  },
+  {
+    "name": "Agiledrop",
+    "type": "standard",
+    "logo": "/logos/agiledrop.svg",
+    "darklogo": "/logos/agiledrop-dark.svg",
+    "squareLogo": "/logos/agiledrop-square.svg",
+    "url": "https://www.agiledrop.com/",
+    "github": "AGILEDROP"
+  },
+  {
+    "name": "Amedick Sommer",
+    "type": "standard",
+    "logo": "/logos/amedick-sommer.svg",
+    "darklogo": "/logos/amedick-sommer.svg",
+    "squareLogo": "/logos/amedick-sommer-square.svg",
+    "url": "https://www.amedick-sommer.de/",
+    "github": "AmedickSommer"
+  },
+  {
+    "name": "NPO Applications GmbH",
+    "type": "standard",
+    "logo": "/logos/npo-applications.png",
+    "darklogo": "/logos/npo-applications-dark.png",
+    "squareLogo": "/logos/npo-applications-square.png",
+    "url": "https://www.npo-applications.de/",
+    "github": "NPO-Applications-GmbH"
+  },
+  {
+    "name": "Pottkinder GmbH",
+    "type": "standard",
+    "logo": "/logos/pottkinder.png",
+    "darklogo": "/logos/pottkinder-dark.png",
+    "squareLogo": "/logos/pottkinder-square.png",
+    "url": "https://pottkinder.de/",
+    "github": "AgenturPottkinder"
+  },
+  {
+    "name": "Let's Talk",
+    "type": "standard",
+    "logo": "/logos/lets-talk.svg",
+    "darklogo": "/logos/lets-talk-dark.svg",
+    "squareLogo": "/logos/lets-talk.svg",
+    "url": "https://letstalk.nl/",
+    "github": "Lets-Talk-NL"
+  },
+  {
+    "name": "Aten Design Group",
+    "type": "standard",
+    "logo": "/logos/atendesigngroup.svg",
+    "darklogo": "/logos/atendesigngroup-dark.svg",
+    "squareLogo": "/logos/atendesigngroup-square.svg",
+    "url": "https://atendesigngroup.com/",
+    "github": "AtenDesignGroup"
+  },
+  {
+    "name": "dkd Internet Service GmbH",
+    "type": "standard",
+    "logo": "/logos/dkd.svg",
+    "darklogo": "/logos/dkd.svg",
+    "squareLogo": "/logos/dkd.svg",
+    "url": "https://www.dkd.de/en/",
+    "github": "dkd"
+  },
+  {
+    "name": "WEBKINDER",
+    "type": "standard",
+    "logo": "/logos/webkinder.svg",
+    "darklogo": "/logos/webkinder-dark.svg",
+    "squareLogo": "/logos/webkinder-square.svg",
+    "url": "https://www.webkinder.ch/",
+    "github": "webkinder"
+  },
+  {
+    "name": "Code Enigma",
+    "type": "standard",
+    "logo": "/logos/codeenigma.svg",
+    "darklogo": "/logos/codeenigma-dark.svg",
+    "squareLogo": "/logos/codeenigma-square.svg",
+    "url": "https://www.codeenigma.com/",
+    "github": "codeenigma"
+  },
+  {
+    "name": "coding. powerful. systems. CPS GmbH",
+    "type": "standard",
+    "logo": "/logos/cps.svg",
+    "darklogo": "/logos/cps-dark.svg",
+    "squareLogo": "/logos/cps-square.svg",
+    "url": "https://www.cps-it.de/",
+    "github": "CPS-IT"
+  },
+  {
+    "name": "webdna",
+    "type": "standard",
+    "logo": "/logos/webdna.svg",
+    "darklogo": "/logos/webdna-dark.svg",
+    "squareLogo": "/logos/webdna-square.png",
+    "url": "https://webdna.co.uk/",
+    "github": "webdna"
+  },
+  {
+    "name": "FreelyGive",
+    "type": "standard",
+    "logo": "/logos/freelygive.svg",
+    "darklogo": "/logos/freelygive.svg",
+    "squareLogo": "/logos/freelygive-square.webp",
+    "url": "https://freelygive.io/",
+    "github": "FreelyGive"
+  },
+  {
+    "name": "8mylez GmbH",
+    "type": "standard",
+    "logo": "/logos/8mylez.svg",
+    "darklogo": "/logos/8mylez-dark.svg",
+    "squareLogo": "/logos/8mylez-square.svg",
+    "url": "https://www.8mylez.com/",
+    "github": "8mylez"
+  }
+]

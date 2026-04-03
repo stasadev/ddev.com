@@ -1,0 +1,68 @@
+---
+/**
+ * This page is meant to be the quickest-possible way to help someone
+ * install and try DDEV. If you make any changes to it, make sure you:
+ *
+ * - Assume they don’t have Docker installed and have never used DDEV.
+ * - Are able to complete all critical steps without leaving the page.
+ * - Only require decision-making when it’s unavoidable.
+ * - Gently link to documentation that elaborates or further explains
+ *   what’s going on—**NOT** providing additional steps that should be
+ *   detailed here.
+ */
+import { getLatestReleaseVersion } from "../lib/api"
+import Cloud from "@components/quickstart/Cloud.astro"
+import Heading from "@components/Heading.astro"
+import Layout from "@layouts/Layout.astro"
+import Linux from "@components/quickstart/Linux.astro"
+import Mac from "@components/quickstart/Mac.astro"
+import PlatformPicker from "@components/PlatformPicker.astro"
+import Windows from "@components/quickstart/Windows.astro"
+
+const title = "Get Started"
+const latestRelease = await getLatestReleaseVersion()
+---
+
+<Layout
+  title={title}
+  description={`Start here if you want to give DDEV a try!`}
+>
+  <main class="max-w-4xl mx-auto mb-24">
+    <Heading title={title} subtitle={`Install and start using DDEV.`} />
+    <style>
+      /* Show selected platform via CSS (works without JS) */
+      body:has(#platform-mac:checked) [data-platform="mac"],
+      body:has(#platform-windows:checked) [data-platform="windows"],
+      body:has(#platform-linux:checked) [data-platform="linux"],
+      body:has(#platform-cloud:checked) [data-platform="cloud"] {
+        display: block;
+      }
+    </style>
+
+    <div class="prose mb-16 dark:prose-invert">
+      <PlatformPicker heading={`Choose your platform:`} />
+    </div>
+
+    <div class="px-6 lg:px-0">
+      {/* Mac instructions */}
+      <div data-platform="mac" class="hidden">
+        <Mac latestVersion={latestRelease} />
+      </div>
+
+      {/* Windows instructions */}
+      <div data-platform="windows" class="hidden">
+        <Windows latestVersion={latestRelease} />
+      </div>
+
+      {/* Linux instructions */}
+      <div data-platform="linux" class="hidden">
+        <Linux latestVersion={latestRelease} />
+      </div>
+
+      {/* Cloud instructions */}
+      <div data-platform="cloud" class="hidden">
+        <Cloud latestVersion={latestRelease} />
+      </div>
+    </div>
+  </main>
+</Layout>

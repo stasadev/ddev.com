@@ -1,0 +1,192 @@
+---
+/**
+ * Global site header.
+ */
+import { GITHUB_URL, DOCUMENTATION_URL } from "../const"
+import {
+  MagnifyingGlassIcon,
+  Bars2Icon,
+  XMarkIcon,
+} from "@heroicons/react/24/solid/index.js"
+import SponsorsBanner from "./SponsorsBanner.astro"
+import ThemeToggle from "./ThemeToggle.astro"
+---
+
+<script>
+  const menuToggle = document.getElementById("mobile-trigger")
+  const menuClose = document.getElementById("mobile-close")
+  const menuContainer = document.getElementById("mobile-menu")
+  let expanded = false
+
+  const initListeners = () => {
+    menuToggle.addEventListener("click", () => {
+      toggleMenu()
+    })
+
+    menuClose.addEventListener("click", () => {
+      toggleMenu(true)
+    })
+
+    window.addEventListener(
+      "resize",
+      (event) => {
+        let width = document.body.clientWidth
+        if (width > 1024) {
+          toggleMenu(true)
+        }
+      },
+      true
+    )
+  }
+
+  const toggleMenu = (forceClosed?: boolean) => {
+    if (expanded || forceClosed) {
+      menuContainer.classList.remove("open")
+      expanded = false
+    } else {
+      menuContainer.classList.add("open")
+      expanded = true
+    }
+  }
+
+  if (menuToggle && menuClose && menuContainer) {
+    initListeners()
+  }
+</script>
+
+<SponsorsBanner />
+
+<header class="w-full p-8">
+  <nav
+    class="flex justify-between items-center content-center max-w-4xl mx-auto"
+    aria-label="Main"
+  >
+    <a href="/" class="relative block cursor-pointer -ml-2">
+      <span class="sr-only">DDEV logo</span>
+      <img
+        class="h-8 w-auto sm:h-10 dark:hidden"
+        src="/logos/ddev.svg"
+        alt="DDEV logo"
+        aria-hidden="true"
+        width="293"
+        height="69"
+      />
+      <img
+        class="h-8 w-auto sm:h-10 hidden dark:block"
+        src="/logos/dark-ddev.svg"
+        alt="DDEV logo"
+        aria-hidden="true"
+        width="293"
+        height="69"
+      />
+    </a>
+    <div class="w-2/3 flex justify-end items-center gap-6">
+      <ul class="hidden lg:flex items-center gap-6">
+        <li>
+          <a
+            class="font-bold whitespace-nowrap dark:text-white"
+            href="/get-started"
+            rel="prefetch">Get Started</a
+          >
+        </li>
+        <li>
+          <a
+            class="font-bold whitespace-nowrap dark:text-white"
+            href="/download"
+            rel="prefetch">Download</a
+          >
+        </li>
+        <li>
+          <a
+            class="font-bold whitespace-nowrap dark:text-white"
+            href={DOCUMENTATION_URL}
+            target="_blank">Docs</a
+          >
+        </li>
+        <li>
+          <a class="font-bold whitespace-nowrap dark:text-white" href="/blog" rel="prefetch"
+            >Blog</a
+          >
+        </li>
+        <li>
+          <a
+            class="font-bold whitespace-nowrap dark:text-white"
+            href={GITHUB_URL}
+            target="_blank">GitHub</a
+          >
+        </li>
+        <li>
+          <a
+            class="font-bold whitespace-nowrap dark:text-white"
+            href="/support-ddev"
+            rel="prefetch">❤️ Support DDEV</a
+          >
+        </li>
+      </ul>
+      <div class="flex items-center gap-3">
+        <a href="/search" class="p-1 dark:text-white">
+          <span class="sr-only">Search</span>
+          <MagnifyingGlassIcon className="w-6 h-6 " aria-hidden={true} />
+        </a>
+        <ThemeToggle />
+        <button id="mobile-trigger" class="flex lg:hidden p-1">
+          <span class="sr-only">Menu</span>
+          <Bars2Icon className="w-6 h-6 dark:text-white" />
+        </button>
+      </div>
+    </div>
+    <div id="mobile-menu" class="menu">
+      <div class="flex w-full justify-end mb-2">
+        <button id="mobile-close" class="flex p-2 py-3 -mr-4">
+          <span class="sr-only">Close</span>
+          <XMarkIcon className="w-6 h-6 " />
+        </button>
+      </div>
+
+      <ul>
+        <li>
+          <a
+            class="font-bold block py-3 px-4 text-lg border-t border-dotted"
+            href="/get-started"
+            rel="prefetch">Get Started</a
+          >
+        </li>
+        <li>
+          <a
+            class="font-bold block py-3 px-4 text-lg border-t border-dotted"
+            href="/download"
+            rel="prefetch">Download</a
+          >
+        </li>
+        <li>
+          <a
+            class="font-bold block py-3 px-4 text-lg border-t border-dotted"
+            href={DOCUMENTATION_URL}
+            target="_blank">Docs</a
+          >
+        </li>
+        <li>
+          <a
+            class="font-bold block py-3 px-4 text-lg border-t border-dotted"
+            href="/blog"
+            rel="prefetch">Blog</a
+          >
+        </li>
+        <li>
+          <a
+            class="font-bold block py-3 px-4 text-lg border-t border-dotted"
+            href={GITHUB_URL}
+            target="_blank">GitHub</a
+          >
+        </li>
+        <li>
+          <a
+            class="font-bold block py-3 px-4 text-lg border-t border-dotted"
+            href="/support-ddev"
+            rel="prefetch">❤️ Support DDEV</a
+          >
+        </li>
+      </ul>
+    </div>
+  </nav>
+</header>

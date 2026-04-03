@@ -1,0 +1,269 @@
+---
+/**
+ * This is a styled terminal that animates screens of output for demonstration.
+ * It's vanilla JavaScript that uses a chain of recursive `setTimeout()` methods
+ * to append and reset some `innerHTML`. (Avoid `setInterval()`, which may let
+ * things drift out of sync!)
+ */
+import { getLatestReleaseVersion } from "../lib/api"
+const latestRelease = await getLatestReleaseVersion()
+
+// Pre-rendered ddev describe output — used for both the animation and noscript fallback
+const versionText = `DDEV version: ${latestRelease}`
+const versionLine = `│ ${versionText}${" ".repeat(83 - versionText.length)} │`
+const describeOutput = `ddev describe
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│ Project: my-project ~/dev/my-project https://my-project.ddev.site                   │
+│ Docker platform: docker-desktop                                                     │
+│ Router: traefik                                                                     │
+${versionLine}
+├────────────┬──────┬────────────────────────────────────────────┬────────────────────┤
+│ SERVICE    │ STAT │ URL/PORT                                   │ INFO               │
+├────────────┼──────┼────────────────────────────────────────────┼────────────────────┤
+│ web        │ <span class="text-green-500">OK</span>   │ https://my-project.ddev.site               │ php PHP 8.4        │
+│            │      │ InDocker -> Host:                          │ Server: nginx-fpm  │
+│            │      │  - web:80 -> 127.0.0.1:51046               │ Docroot: ''        │
+│            │      │  - web:443 -> 127.0.0.1:51047              │ Perf mode: none    │
+│            │      │  - web:8025 -> 127.0.0.1:51048             │ NodeJS: 24         │
+├────────────┼──────┼────────────────────────────────────────────┼────────────────────┤
+│ db         │ <span class="text-green-500">OK</span>   │ InDocker -> Host:                          │ mysql:8.0          │
+│            │      │  - db:3306 -> 127.0.0.1:51045              │ User/Pass: 'db/db' │
+│            │      │                                            │ or 'root/root'     │
+├────────────┼──────┼────────────────────────────────────────────┼────────────────────┤
+│ xhgui      │ <span class="text-green-500">OK</span>   │ https://my-project.ddev.site:8142          │                    │
+│            │      │ InDocker:                                  │                    │
+│            │      │  - xhgui:80                                │                    │
+│            │      │ Launch: ddev xhgui                         │                    │
+├────────────┼──────┼────────────────────────────────────────────┼────────────────────┤
+│ Mailpit    │      │ Mailpit: https://my-project.ddev.site:8026 │                    │
+│            │      │ Launch: ddev mailpit                       │                    │
+├────────────┼──────┼────────────────────────────────────────────┼────────────────────┤
+│ All URLs   │      │ https://my-project.ddev.site,              │                    │
+│            │      │ https://127.0.0.1:51047,                   │                    │
+│            │      │ http://my-project.ddev.site,               │                    │
+│            │      │ http://127.0.0.1:51046                     │                    │
+└────────────┴──────┴────────────────────────────────────────────┴────────────────────┘`
+---
+
+<script>
+  /**
+   * A complete terminal example or animation.
+   */
+  interface Screen {
+    clumps: Clump[]
+    output: string
+  }
+
+  /**
+   * A subset of lines within a screen, grouped by animation type and timing.
+   */
+  interface Clump {
+    transition: "type" | "roll" | "show"
+    lines: number
+    wait?: number
+  }
+
+  const terminalWrapper = document.querySelector('.terminal-wrapper') as HTMLElement
+  const describeOutput = terminalWrapper?.dataset.describeOutput ?? ''
+
+  /**
+   * Output and animation settings for the things we want to show in the terminal.
+   */
+  const screens: Screen[] = [
+    {
+      clumps: [
+        { transition: "type", lines: 1, wait: 1000 },
+        { transition: "roll", lines: 4, wait: 1000 },
+        { transition: "roll", lines: 4, wait: 1000 },
+        { transition: "roll", lines: 3, wait: 1000 },
+        { transition: "show", lines: 3 },
+      ],
+      output: `ddev start
+
+Starting my-project...
+Building project images...
+<span class="text-green-500">Project images built in 1s.</span>
+ Network ddev-my-project_default  Created
+ Container ddev-my-project-web  Started
+ Container ddev-my-project-db  Started
+Waiting for containers to become ready: [web db]... ready in 1.0s
+Starting ddev-router, pushing config...
+ Container ddev-router  Started
+Waiting for ddev-router to become ready... ready in 1.0s
+<span class="text-green-500">Successfully started my-project</span>
+<span class="text-green-500">Your project can be reached at https://my-project.ddev.site</span>
+<span class="text-green-500">See 'ddev describe' for alternate URLs.</span>`,
+    },
+    {
+      clumps: [
+        { transition: "type", lines: 1, wait: 250 },
+        { transition: "show", lines: 31 },
+      ],
+      output: describeOutput,
+    },
+  ]
+
+  // Element whose inner HTML will be our terminal output
+  const stage = document.getElementById("animation-stage")
+
+  // Seconds to wait after animation’s finished, before moving on to the next screen
+  const secondsBetweenScreens = 5
+
+  // Milliseconds between characters when “typing” in a line
+  const typeCharacterDelay = 35
+
+  // Initialize state variables
+  let currentScreenIndex: number,
+    currentClumpIndex: number,
+    currentScreen: Screen,
+    currentClump: Clump,
+    currentClumpLine: number,
+    currentLine: number,
+    outputLines: string[],
+    currentChar: number
+
+  /**
+   * Handle the next thing: next line in the clump, next clump, or next screen.
+   */
+  const next = () => {
+    if (currentClumpLine < currentClump.lines) {
+      // If we have unhandled lines in this clump, proceed to the next line
+      nextLine()
+    } else if (currentClumpIndex < currentScreen.clumps.length - 1) {
+      // If we have unhandled clumps in this creen, proceed to the next clump
+      nextClump(currentClump.wait ?? 0)
+    } else {
+      // Proceed to the next screen
+      nextScreen()
+    }
+  }
+
+  /**
+   * Set the imaginary playhead to the beginning of a screen and get ready to play.
+   */
+  const initScreen = (activeIndex = 0) => {
+    currentScreenIndex = activeIndex
+    currentScreen = screens[currentScreenIndex]
+    currentClumpIndex = 0
+    currentClump = currentScreen.clumps[currentClumpIndex]
+    currentLine = 0
+    currentClumpLine = 0
+    outputLines = currentScreen.output.split("\n")
+    resetOutput()
+  }
+
+  /**
+   * Recursive method for introducing each character of a line before continuing.
+   */
+  const typeInText = (callback: Function) => {
+    const chars = outputLines[currentLine].split("")
+
+    if (currentChar < chars.length) {
+      setTimeout(() => {
+        appendOutput(chars[currentChar])
+        currentChar += 1
+        typeInText(callback)
+      }, typeCharacterDelay)
+    } else {
+      appendOutput("\n")
+      callback()
+    }
+  }
+
+  /**
+   * Transition the next line to the displayed output.
+   */
+  const nextLine = () => {
+    if (currentClump.transition === "type") {
+      currentChar = 0
+      typeInText(() => {
+        currentClumpLine += 1
+        currentLine += 1
+        next()
+      })
+    } else if (currentClump.transition === "roll") {
+      // show + delay
+      appendOutput(outputLines[currentLine] + "\n")
+      currentClumpLine += 1
+      currentLine += 1
+      setTimeout(next, 100)
+    } else if (currentClump.transition === "show") {
+      // show + no delay
+      appendOutput(outputLines[currentLine] + "\n")
+      currentClumpLine += 1
+      currentLine += 1
+      next()
+    }
+  }
+
+  /**
+   * Advance to the next clump after the given duration.
+   */
+  const nextClump = (duration: number) => {
+    setTimeout(() => {
+      currentClumpIndex += 1
+      currentClump = currentScreen.clumps[currentClumpIndex]
+      currentClumpLine = 0
+      next()
+    }, duration)
+  }
+
+  /**
+   * Advance to the next screen after a predefined duration.
+   */
+  const nextScreen = () => {
+    setTimeout(() => {
+      if (currentScreenIndex < screens.length - 1) {
+        currentScreenIndex += 1
+      } else {
+        currentScreenIndex = 0
+      }
+
+      initScreen(currentScreenIndex)
+      next()
+    }, secondsBetweenScreens * 1000)
+  }
+
+  /**
+   * Clear the displayed output.
+   */
+  const resetOutput = () => {
+    stage.innerHTML = ""
+  }
+
+  /**
+   * Append the given string to the displayed output.
+   */
+  const appendOutput = (value: string) => {
+    stage.innerHTML += value
+  }
+
+  /**
+   * On load, initialize the first screen and start playing.
+   */
+  window.addEventListener("load", () => {
+    initScreen(0)
+    next()
+  })
+</script>
+
+<style>
+  /* data-theme is set by the inline head script before body renders,
+   * so these rules apply on the very first paint with no flash. */
+  html[data-theme] #noscript-pre { display: none; }
+  html:not([data-theme]) #animated-pre { display: none; }
+</style>
+
+<div class="terminal-wrapper rounded-lg shadow-lg" style="background: #2e3440;" data-describe-output={describeOutput}>
+  <div class="top-bar flex p-3 space-x-2 rounded-t-lg" style="background: #2e3440;">
+    <div class="block rounded-full bg-slate-500 w-3 h-3"></div>
+    <div class="block rounded-full bg-slate-500 w-3 h-3"></div>
+    <div class="block rounded-full bg-slate-500 w-3 h-3"></div>
+  </div>
+  <div class="overflow-hidden my-0">
+    <div class="h-full p-4 text-slate-300 text-xs" style="height: 540px;">
+      <pre id="animated-pre"><span class="select-none text-slate-400">→ </span><span id="animation-stage" /></pre>
+      <pre id="noscript-pre"><span class="select-none text-slate-400">→ </span><span set:html={describeOutput} /></pre>
+    </div>
+  </div>
+</div>

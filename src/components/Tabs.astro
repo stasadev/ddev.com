@@ -1,0 +1,105 @@
+---
+import { customAlphabet } from "nanoid/non-secure"
+
+export interface Props {
+  order: string[]
+}
+
+const { order } = Astro.props
+
+const getId = () => {
+  const nanoid = customAlphabet("1234567890abcdefghijklmnopqrstuvwxyz", 6)
+  return nanoid()
+}
+
+const slotNames = Object.entries(Astro.slots).map(([name]) => {
+  return name
+})
+
+let tabs: object[] = []
+
+order.map((label) => {
+  if (slotNames.includes(label)) {
+    tabs.push({
+      label: label,
+      uid: getId(),
+    })
+  }
+})
+---
+
+<script>
+  class TabArea extends HTMLElement {
+    constructor() {
+      super()
+      this.initTabs()
+    }
+
+    initTabs() {
+      const tabs = this.querySelectorAll(".tabs .tab")
+      Array.from(tabs).map((tab) => {
+        tab.addEventListener("click", () => {
+          this.selectTab(tab.id)
+        })
+      })
+
+      this.selectTab(tabs[0].id)
+    }
+
+    selectTab(tabElementId: string) {
+      const tab = document.getElementById(tabElementId)
+      const elementId = tab.getAttribute("aria-controls")
+      const allTabs = this.querySelectorAll(".tabs .tab")
+      const allPanels = this.querySelectorAll("[role=tabpanel]")
+      const panel = document.getElementById(elementId)
+
+      Array.from(allTabs).map((tab) => {
+        tab.classList.remove("active")
+        tab.setAttribute("aria-selected", "false")
+      })
+
+      Array.from(allPanels).map((panel) => {
+        panel.classList.remove("active")
+      })
+
+      tab.classList.add("active")
+      tab.setAttribute("aria-selected", "true")
+      panel.classList.add("active")
+    }
+  }
+
+  customElements.define("tab-area", TabArea)
+</script>
+
+<tab-area>
+  <div class="tab-area">
+    <nav class="tabs" role="tablist">
+      {
+        tabs.map((tab, index) => (
+          <button
+            role="tab"
+            aria-selected={index === 0}
+            aria-controls={`panel-${tab.uid}`}
+            id={`tab-${tab.uid}`}
+            class={`tab` + (index === 0 ? ` active` : ``)}
+          >
+            <span>{tab.label}</span>
+          </button>
+        ))
+      }
+    </nav>
+
+    <div class="panels">
+      {
+        tabs.map(async (tab, index) => (
+          <div
+            id={`panel-${tab.uid}`}
+            role="tabpanel"
+            class={`panel` + (index === 0 ? ` active` : ``)}
+            set:html={await Astro.slots.render(tab.label)}
+          />
+        ))
+      }
+    </div>
+  </div>
+</tab-area>

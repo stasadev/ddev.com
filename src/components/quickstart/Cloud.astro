@@ -1,0 +1,81 @@
+---
+import Terminal from "@components/Terminal.astro"
+import Tabs from "@components/Tabs.astro"
+import { Code } from "astro/components"
+import CommunityCTA from "./CommunityCTA.astro"
+import Examples from "./Examples.astro"
+import { SHIKI_THEMES } from "../../const"
+
+export interface Props {
+  latestVersion: string
+}
+
+const { latestVersion } = Astro.props
+---
+
+<div class="prose dark:prose-invert">
+  <h2 class="text-3xl mt-24">
+    <small class="block font-mono text-xs text-gray-500">1/2</small>Launch a
+    Provider &amp; Install DDEV
+  </h2>
+
+  <Tabs order={["GitHub Codespaces"]}>
+    <Fragment slot="GitHub Codespaces">
+      <div class="prose py-5 dark:prose-invert">
+        <ol>
+          <li>
+            <a href="https://github.com/codespaces/new"
+              target="_blank"
+              >Create a new codespace</a
+            > for your project or open an existing one.
+          </li>
+          <li>
+            Edit the project’s <code>.devcontainer/devcontainer.json</code> file:
+            <Code
+              code={`{
+    "image": "mcr.microsoft.com/devcontainers/base:debian-12",
+    "features": {
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {
+            "version": "latest"
+        },
+        "ghcr.io/ddev/ddev/install-ddev:latest": {}
+    }
+}
+`}
+              themes={SHIKI_THEMES}
+              defaultColor={false}
+              lang="json"
+            />
+          </li>
+          <li>
+            Save the file and rebuild the container by running VS Code’s
+            “Codespaces: Rebuild Container” action. (<kbd>⌘</kbd> + <kbd
+              >SHIFT</kbd
+            > + <kbd>P</kbd> on a Mac or <kbd>CTRL</kbd> + <kbd>SHIFT</kbd> + <kbd
+              >P</kbd
+            > on Windows, then search for “rebuild”.)
+          </li>
+        </ol>
+      </div>
+      <a
+        href="https://github.com/codespaces/new/ddev/ddev"
+        target="_blank"
+        ><img
+          src="https://github.com/codespaces/badge.svg"
+          alt="Open in GitHub Codespaces"
+          class="pb-4 my-4"
+        />
+      </a>
+    </Fragment>
+  </Tabs>
+
+  <p>Confirm that you’ve now got DDEV installed: 🎉</p>
+  <Terminal code={`→ ddev -v\nddev version ${latestVersion}`} />
+
+</div>
+
+<Examples itemNumber="2/2" terminalType="default" terminalSymbol="→" />
+
+<div class="prose dark:prose-invert">
+  <CommunityCTA />
+</div>

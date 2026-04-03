@@ -1,0 +1,152 @@
+---
+import Header from "../components/Header.astro"
+import Footer from "../components/Footer.astro"
+import StructuredData from "../components/meta/StructuredData.astro"
+import Icons from "../components/meta/Icons.astro"
+import { SEO } from "astro-seo"
+import {
+  SITE_TITLE,
+  SITE_DESCRIPTION,
+  ORG_COUNTRY,
+  ORG_CITY,
+  ORG_STATE,
+  ORG_POSTAL_CODE,
+  ORG_STREET,
+  ORG_NAME,
+  ORG_EMAIL,
+  ORG_FOUNDED,
+  ORG_SAME_AS,
+  ORG_PHONE,
+} from "../const"
+import themeToggleInitScript from "../scripts/theme-toggle-init.js?raw"
+
+export interface Props {
+  title: string
+  description?: string
+  noindex?: boolean
+  nofollow?: boolean
+  ogImage?: string
+  ogImageAlt?: string
+  link?: object[]
+  structuredData?: object[]
+  pubDate?: Date
+  modifiedDate?: Date
+}
+
+const {
+  title,
+  description = SITE_DESCRIPTION,
+  noindex = false,
+  nofollow = false,
+  ogImage,
+  ogImageAlt,
+  link = [],
+  structuredData = [],
+  pubDate,
+  modifiedDate,
+} = Astro.props
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString()
+const pageTitle = title !== '' ? `${title} | DDEV` : 'DDEV'
+
+let jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    ...structuredData,
+    {
+      "@type": "WebSite",
+      description: SITE_DESCRIPTION,
+      name: SITE_TITLE,
+      publisher: {
+        "@id": `${Astro.site}#identity`,
+      },
+      url: Astro.site,
+    },
+    {
+      "@id": `${Astro.site}#identity`,
+      "@type": "Organization",
+      address: {
+        "@type": "PostalAddress",
+        addressCountry: ORG_COUNTRY,
+        addressLocality: ORG_CITY,
+        addressRegion: ORG_STATE,
+        postalCode: ORG_POSTAL_CODE,
+        streetAddress: ORG_STREET,
+      },
+      email: ORG_EMAIL,
+      foundingDate: ORG_FOUNDED,
+      image: `${Astro.site}img/og-default.png`,
+      legalName: ORG_NAME,
+      logo: {
+        "@type": "ImageObject",
+        height: 200,
+        url: `${Astro.site}logos/ddev.png`,
+        width: 852,
+      },
+      name: SITE_TITLE,
+      sameAs: ORG_SAME_AS,
+      telephone: ORG_PHONE,
+      url: Astro.site,
+    },
+  ],
+}
+
+const ensureAbsoluteUrl = (url: string) => {
+  if (url.startsWith('/')) {
+    return `${Astro.site}${url.slice(1)}`
+  }
+
+  return url;
+}
+
+import "../styles/global.css"
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <SEO
+      title={pageTitle}
+      description={description}
+      canonical={canonicalUrl}
+      noindex={noindex}
+      nofollow={nofollow}
+      charset={`utf-8`}
+      openGraph={{
+        basic: {
+          title: title !== '' ? title : 'DDEV',
+          url: canonicalUrl,
+          type: `website`,
+          image: ensureAbsoluteUrl(ogImage ? ogImage : `${Astro.site}img/og-default.png`),
+        },
+        image: {
+          alt: ogImageAlt ? ogImageAlt : `DDEV logo`,
+        },
+        optional: {
+          description: description,
+          siteName: SITE_TITLE,
+        },
+        article: pubDate ? {
+          publishedTime: pubDate.toISOString(),
+          modifiedTime: modifiedDate ? modifiedDate.toISOString() : undefined,
+        } : undefined,
+      }}
+      extend={{
+        link: link,
+      }}
+    />
+    <Icons />
+    <script is:inline set:html={themeToggleInitScript}></script>
+    <StructuredData data={jsonLd} />
+  </head>
+  <body class="dark:bg-slate-800">
+    <Header />
+    <div class="mx-auto">
+      <slot />
+    </div>
+    <Footer />
+  </body>
+</html>

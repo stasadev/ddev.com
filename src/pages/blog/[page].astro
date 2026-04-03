@@ -1,0 +1,41 @@
+---
+import Layout from "../../layouts/Layout.astro"
+import BlogPostGrid from "../../components/BlogPostGrid.astro"
+import Heading from "../../components/Heading.astro"
+import { getCollection } from "astro:content"
+import { BLOG_PAGE_SIZE } from "src/const"
+
+/**
+ * Tell Astro to build routes for paginated blog post listings.
+ * https://docs.astro.build/en/reference/api-reference/#getstaticpaths
+ */
+export async function getStaticPaths() {
+  const posts = await getCollection("blog")
+  const allPosts = posts.sort((a, b) => {
+    return new Date(a.data.pubDate) > new Date(b.data.pubDate) ? -1 : 1
+  })
+
+  const totalPages = Math.ceil(allPosts.length / BLOG_PAGE_SIZE)
+
+  return Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => ({
+    params: { page: String(pageNum) },
+    props: {
+      posts: allPosts.slice((pageNum - 1) * BLOG_PAGE_SIZE, pageNum * BLOG_PAGE_SIZE),
+      currentPage: pageNum,
+      prevUrl: pageNum === 2 ? `/blog/` : pageNum > 2 ? `/blog/${pageNum - 1}/` : undefined,
+      nextUrl: pageNum < totalPages ? `/blog/${pageNum + 1}/` : undefined,
+    },
+  }))
+}
+
+const { posts, currentPage, prevUrl, nextUrl } = Astro.props
+
+const title = `Blog Posts`
+---
+
+<Layout title={title + `, Page ${currentPage}`} noindex={true}>
+  <main class="max-w-4xl mx-auto">
+    <Heading title={title} subtitle={`DDEV, Docker, and local development.`} />
+    <BlogPostGrid posts={posts} prevUrl={prevUrl} nextUrl={nextUrl} />
+  </main>
+</Layout>

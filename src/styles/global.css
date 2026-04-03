@@ -1,0 +1,343 @@
+@import "tailwindcss";
+@config "../../tailwind.config.cjs";
+@import "./callouts.css";
+
+:root {
+  --code-bg-light: #dfe2e7;
+  --code-bg-dark: #2e3440;
+}
+
+header {
+  a[target="_blank"] {
+    &::after {
+      @apply inline-block w-3 h-3 ml-1 relative opacity-50 top-px;
+      content: "";
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25' /%3E%3C/svg%3E");
+    }
+  }
+}
+
+footer {
+  ul a[target="_blank"] {
+    &::after {
+      content: "";
+      @apply inline-block w-3 h-3 ml-1 relative opacity-50 top-px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='currentColor' class='w-6 h-6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25' /%3E%3C/svg%3E");
+    }
+  }
+}
+
+.dark {
+  header {
+    a[target="_blank"] {
+      &::after {
+        @apply opacity-75;
+        filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg)
+          brightness(119%) contrast(119%);
+      }
+    }
+  }
+
+  footer {
+    ul a[target="_blank"] {
+      &::after {
+        @apply opacity-75;
+        filter: invert(42%) sepia(93%) saturate(1352%) hue-rotate(87deg)
+          brightness(119%) contrast(119%);
+      }
+    }
+  }
+}
+
+/* Alt text styling for a not-yet-loaded image */
+img {
+  @apply font-mono text-sm text-gray-500;
+}
+
+.footnotes {
+  @apply border-t mt-24 pt-4 text-base;
+}
+
+.video-container {
+  @apply relative overflow-hidden w-full;
+
+  &::after {
+    @apply block;
+    content: "";
+    padding-top: 56.25%;
+  }
+
+  iframe {
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+}
+
+/* DarkMode for mark*/
+mark {
+  @apply dark:bg-[blue];
+}
+
+.menu {
+  @apply hidden absolute top-0 right-0 max-w-full bg-white px-8 py-4 z-30 text-center shadow-2xl rounded-lg m-3 dark:bg-slate-800 dark:text-white;
+
+  &.open {
+    @apply block;
+  }
+}
+
+input[type="radio"]:checked + label {
+  @apply font-bold border-blue-300 shadow border;
+}
+
+.terminal-wrapper {
+  @apply rounded-lg;
+  background: var(--code-bg-light);
+  img {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+  pre {
+    @apply font-normal overflow-x-auto font-mono bg-transparent rounded-t-none;
+
+    code {
+      .prompt {
+        @apply select-none opacity-60;
+      }
+    }
+  }
+}
+
+html.dark .terminal-wrapper {
+  background: var(--code-bg-dark);
+}
+
+.terminal-wrapper .top-bar {
+  background: var(--code-bg-light);
+
+  &.powershell {
+    @apply justify-between text-gray-800 bg-gray-300;
+  }
+  &.powershell-ubuntu {
+    @apply justify-between text-gray-800 bg-gray-300;
+  }
+  &.ubuntu {
+    @apply justify-end;
+  }
+}
+
+html.dark .terminal-wrapper .top-bar {
+  background: var(--code-bg-dark);
+
+  &.powershell {
+    @apply text-white;
+    background: #1f2023;
+  }
+  &.powershell-ubuntu {
+    @apply text-white;
+    background: #1f2023;
+  }
+}
+
+.prose .terminal-wrapper pre {
+  @apply my-0;
+}
+
+.tab-area {
+  @apply -mx-4 mb-6 mt-6;
+  max-width: 41.5rem;
+}
+
+.tabs {
+  @apply ml-1;
+}
+
+.tab {
+  @apply px-3 py-1 leading-none font-mono font-bold text-sm text-gray-500 hover:text-black;
+
+  &:hover {
+    @apply dark:text-white;
+  }
+
+  span {
+    @apply border-dotted border-b border-gray-400;
+  }
+
+  &.active {
+    @apply text-black dark:text-gray-300;
+
+    span {
+      @apply border-solid border-black dark:border-gray-300;
+    }
+  }
+}
+
+.panel {
+  @apply hidden px-4 rounded-lg shadow-xl dark:bg-transparent dark:shadow-slate-900/50;
+
+  &.active {
+    @apply block;
+  }
+}
+
+/* Table containers - horizontal scroll on mobile */
+.prose .table-wrapper {
+  overflow-x: auto;
+}
+
+/* Inline code - allow breaking long strings on mobile */
+.prose :not(pre) > code {
+  overflow-wrap: break-word;
+}
+
+/* Code block containers */
+.prose pre,
+pre.astro-code {
+  position: relative;
+  overflow: visible;
+}
+
+.prose pre code,
+pre.astro-code code {
+  display: block;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+/* Shiki dual theme support - override backgrounds for better contrast */
+pre.astro-code,
+pre.astro-code span {
+  color: var(--shiki-light) !important;
+  background-color: var(--code-bg-light) !important;
+}
+
+html.dark pre.astro-code,
+html.dark pre.astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--code-bg-dark) !important;
+}
+
+/* Copy buttons */
+button.copy,
+.shiki-copy,
+pre.astro-code > button.copy {
+  position: absolute;
+  top: 0.65rem;
+  right: 0.85rem;
+  padding: 0.25rem 0.7rem 0.2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #333;
+  opacity: 0.5;
+  z-index: 10;
+  pointer-events: auto;
+  display: none;
+  transition:
+    opacity 0.2s,
+    background-color 0.2s;
+}
+
+html.dark button.copy,
+html.dark .shiki-copy,
+html.dark pre.astro-code > button.copy {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.terminal-code-container button.copy,
+.terminal-code-container .shiki-copy,
+.terminal-code-container pre.astro-code > button.copy {
+  top: 0.3rem;
+}
+
+.prose button.copy {
+  right: 1.35rem;
+}
+
+@media (min-width: 768px) {
+  button.copy,
+  .shiki-copy,
+  pre.astro-code > button.copy {
+    display: block;
+  }
+}
+
+button.copy:hover,
+.shiki-copy:hover,
+pre.astro-code > button.copy:hover {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+html.dark button.copy:hover,
+html.dark .shiki-copy:hover,
+html.dark pre.astro-code > button.copy:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+button.copy.copied,
+.shiki-copy.copied,
+pre.astro-code > button.copy.copied {
+  background-color: #0891b2 !important;
+  color: white !important;
+  opacity: 1;
+}
+
+button.copy::after {
+  content: "Copy";
+}
+
+button.copy.copied::after {
+  content: "Copied!";
+}
+
+/* Hide copy buttons without JS, they require JS to function */
+html:not([data-theme]) button.copy,
+html:not([data-theme]) .shiki-copy,
+html:not([data-theme]) pre.astro-code > button.copy {
+  display: none;
+}
+
+/* Terminal prompt styling */
+.terminal-code-container pre.astro-code {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.terminal-code-container pre.astro-code code .line::before {
+  content: attr(data-prompt) " ";
+  position: absolute;
+  left: 1rem;
+  opacity: 0.6;
+}
+
+.terminal-code-container pre.astro-code code .line:empty::before {
+  content: "";
+}
+
+/* Remove background injected by astro-mermaid */
+pre.mermaid[data-processed] {
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+
+/* Remove underline from heading anchor links (but not other links in headings) */
+.prose h1 > a[href^="#"],
+.prose h2 > a[href^="#"],
+.prose h3 > a[href^="#"],
+.prose h4 > a[href^="#"],
+.prose h5 > a[href^="#"],
+.prose h6 > a[href^="#"] {
+  @apply no-underline;
+  color: inherit;
+}
+
+.prose h1 > a[href^="#"]:hover,
+.prose h2 > a[href^="#"]:hover,
+.prose h3 > a[href^="#"]:hover,
+.prose h4 > a[href^="#"]:hover,
+.prose h5 > a[href^="#"]:hover,
+.prose h6 > a[href^="#"]:hover {
+  @apply no-underline;
+}

@@ -1,0 +1,86 @@
+---
+import featuredSponsors from "../featured-sponsors.json"
+
+/**
+ * Sketchy array of classes that should be applied to specific logos
+ * in this context. Match the name from `featured-sponsors.json` if
+ * you need to add one.
+ */
+const nudges = {
+  Tag1: "h-9 self-center", // Added self-center to align it vertically
+  "Oliver Wand": "h-12 w-12",
+  DrupalEasy: "h-10",
+  "Redfin Solutions": "h-16 w-16",
+  MacStadium: "h-15",
+  Lullabot: "h-9",
+  "Craft CMS": "h-11",
+  undpaul: "h-9",
+  "1xINTERNET": "h-11",
+}
+
+// Separate lead sponsors from regular sponsors
+const leadSponsors = featuredSponsors.filter(sponsor => sponsor.isLeading === true)
+const regularSponsors = featuredSponsors.filter(sponsor => sponsor.isLeading !== true)
+
+// Add class property to relevant sponsor objects
+regularSponsors.map((sponsor) => {
+  if (sponsor.name in nudges) {
+    sponsor.class = nudges[sponsor.name]
+  }
+})
+---
+
+<div class="relative flex flex-col items-center space-y-12">
+  {/* Lead Sponsors Section */}
+  {leadSponsors.length > 0 && (
+      <div class="w-full flex justify-center pb-8 border-b border-gray-200 dark:border-white">
+        {leadSponsors.map((sponsor) => (
+            <a
+                class="block relative overflow-hidden cursor-pointer h-16 mx-6"
+                title={sponsor.name}
+                href={sponsor.url}
+                target="_blank"
+            >
+              <img
+                  src={sponsor.logo}
+                  class="block w-auto h-full dark:hidden"
+                  alt={`${sponsor.name} logo`}
+              />
+              <img
+                  src={sponsor.darklogo}
+                  class="hidden dark:block w-auto h-full"
+                  alt={`${sponsor.name} logo`}
+              />
+            </a>
+        ))}
+      </div>
+  )}
+
+  {/* Regular Sponsors Section */}
+  <div
+      class="flex flex-wrap gap-y-12 justify-center items-center"
+  >
+    {regularSponsors.map((sponsor) => (
+        <a
+            class={
+                `block relative overflow-hidden cursor-pointer h-12 mx-6` +
+                (sponsor.hasOwnProperty("class") ? ` ` + sponsor.class : ``)
+            }
+            title={sponsor.name}
+            href={sponsor.url}
+            target="_blank"
+        >
+          <img
+              src={sponsor.logo}
+              class="block w-auto h-full dark:hidden"
+              alt={`${sponsor.name} logo`}
+          />
+          <img
+              src={sponsor.darklogo}
+              class="hidden dark:block w-auto h-full"
+              alt={`${sponsor.name} logo`}
+          />
+        </a>
+    ))}
+  </div>
+</div>

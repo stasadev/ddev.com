@@ -1,0 +1,70 @@
+---
+import AppLogos from "@components/AppLogos.astro"
+import Benefits from "@components/Benefits.astro"
+import BlogFeatures from "@components/BlogFeatures.astro"
+import Contributors from "@components/Contributors.astro"
+import Features from "@components/Features.astro"
+import Hero from "@components/Hero.astro"
+import Layout from "../layouts/Layout.astro"
+import RepoCard from "@components/RepoCard.astro"
+import SoftwareLogos from "@components/SoftwareLogos.astro"
+import { GITHUB_REPO } from "../const"
+
+const rssUrl = new URL(`/blog/rss.xml`, Astro.site).toString()
+const jsonUrl = new URL(`/blog/feed.json`, Astro.site).toString()
+---
+
+<Layout
+  title={``}
+  description={`Local development environments in seconds. Customize, share, and extend with ease.`}
+  link={[
+    { rel: "alternate", href: rssUrl, type: "application/rss+xml" },
+    { rel: "alternate", href: jsonUrl, type: "application/json" },
+  ]}
+>
+  <main>
+    <Hero />
+
+    <div class="max-w-6xl mx-auto">
+      <Features />
+    </div>
+
+    <SoftwareLogos />
+    <Benefits />
+    <AppLogos />
+    <BlogFeatures />
+    <Contributors />
+    <div>
+      <div class="max-w-4xl mx-auto py-24 px-6 lg:px-0">
+        <div
+          class="grid gap-x-6 gap-y-8 md:gap-y-12 grid-cols-1 md:grid-cols-3 dark:text-white"
+        >
+          <RepoCard
+            name={GITHUB_REPO}
+            description="Official DDEV development and issues."
+          />
+          <RepoCard
+            name="ddev/ddev.com"
+            description="Astro source code used to generate ddev.com."
+          />
+          <RepoCard
+            name="ddev/ddev-addon-template"
+            description="A template for DDEV add-ons and services."
+          />
+          <RepoCard
+            name="ddev/ddev-intellij-plugin"
+            description="DDEV Integration for JetBrains IDEs."
+          />
+          <RepoCard
+            name="ddev/vscode-ddev-manager"
+            description="DDEV Manager for VS Code."
+          />
+          <RepoCard
+            name="ddev/addon-registry"
+            description="A registry of DDEV add-ons."
+          />
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

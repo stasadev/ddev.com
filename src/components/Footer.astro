@@ -1,0 +1,201 @@
+---
+/**
+ * Global site footer.
+ */
+import {
+  GITHUB_ISSUES_URL,
+  DOCUMENTATION_URL,
+  ADDON_REGISTRY_URL,
+  DISCORD_URL,
+  COPYRIGHT_HOLDER,
+  MASTODON_URL,
+  GITHUB_URL,
+  STORE_URL,
+  BLUESKY_URL,
+  LINKEDIN_URL,
+  YOUTUBE_URL,
+} from "../const"
+
+import Icon from "./Icon.astro"
+
+const navigation = {
+  support: [
+    { name: "Documentation", href: DOCUMENTATION_URL, target: "_blank" },
+    { name: "Add-on Registry", href: ADDON_REGISTRY_URL, target: "_blank" },
+    { name: "Issues", href: GITHUB_ISSUES_URL, target: "_blank" },
+    { name: "Discord", href: DISCORD_URL, target: "_blank", me: true },
+    { name: "Contact", href: "/contact", me: true }
+  ],
+  product: [
+    { name: "About", href: "/about" },
+    { name: "Download", href: "/download" },
+    { name: "Swag Shop", href: STORE_URL, target: "_blank"},
+    { name: "Contributing", href: "/support-ddev" },
+    { name: "Contributor Live Training", href: "/blog/contributor-training"},
+    { name: "Blog", href: "/blog" },
+    { name: "Foundation", href: "/foundation" },
+    { name: "Newsletter", href: "/newsletter"},
+  ],
+  social: [
+    {
+      name: "Discord",
+      href: DISCORD_URL,
+      me: true
+    },
+    {
+      name: "YouTube",
+      href: YOUTUBE_URL,
+      me: true
+    },
+    {
+      name: "Bluesky",
+      href: BLUESKY_URL,
+      me: true
+    },
+    {
+      name: "Mastodon",
+      href: MASTODON_URL,
+      me: true
+    },
+    {
+      name: "LinkedIn",
+      href: LINKEDIN_URL,
+      me: true
+    },
+    {
+      name: "GitHub",
+      href: GITHUB_URL,
+      me: true
+    },
+  ],
+  feeds: [
+    { name: "RSS", href: "/blog/rss.xml" },
+    { name: "JSON", href: "/blog/feed.json" },
+  ],
+}
+---
+
+<footer class="dark:bg-transparent">
+  <div class="max-w-4xl mx-auto py-12 px-6 lg:px-0 lg:py-16">
+    <div class="pb-8 xl:grid xl:grid-cols-3 xl:gap-8">
+      <div class="grid grid-cols-auto gap-8 xl:col-span-4">
+        <div class="md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-8">
+          <div class="mt-12 md:mt-0">
+            <h2 class="text-sm font-mono text-navy-300 tracking-wider dark:text-navy-100">
+              Support
+            </h2>
+            <ul class="mt-4 space-y-4 dark:text-white">
+              {
+                navigation.support.map((item) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      class="text-base"
+                      rel={item.hasOwnProperty('me') && item.me ? 'me' : 'prefetch'}
+                      target={item.target || '_self'}
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="mt-12 md:mt-0">
+            <h2 class="text-sm font-mono text-navy-300 tracking-wider dark:text-navy-100">
+              Product
+            </h2>
+            <ul class="mt-4 space-y-4 dark:text-white">
+              {
+                navigation.product.map((item) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      class="text-base"
+                      rel={item.hasOwnProperty('me') && item.me ? 'me' : 'prefetch'}
+                      target={item.target || '_self'}
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="mt-12 md:mt-0">
+            <h2 class="text-sm font-mono text-navy-300 tracking-wider dark:text-navy-100">
+              Social
+            </h2>
+            <ul class="mt-4 space-y-4 dark:text-white">
+              {
+                navigation.social.map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        class="text-base"
+                        rel={item.hasOwnProperty('me') && item.me ? 'me' : 'prefetch'}
+                        target="_blank"
+                      >
+                        {item.name}
+                      </a>
+                    </li>
+                ))
+              }
+            </ul>
+          </div>
+          <div class="mt-12 md:mt-0">
+            <h2 class="text-sm font-mono text-navy-300 tracking-wider dark:text-navy-100">
+              Feeds
+            </h2>
+            <ul class="mt-4 space-y-4 dark:text-white">
+              {
+                navigation.feeds.map((item) => (
+                  <li>
+                    <a
+                      href={item.href}
+                      class="text-base"
+                      target={item.target || '_self'}
+                    >
+                      {item.name}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mt-8 border-t border-gray-300 pt-8 md:flex md:items-center md:justify-between dark:border-slate-700"
+    >
+      <div
+        class="flex flex-wrap gap-6 md:order-2 items-center justify-center content-center"
+      >
+        {
+          navigation.social.map((item) => (
+            <a
+              href={item.href}
+              title={item.name}
+              target="_blank"
+              class={`text-gray-500 hover:text-gray-800 hover:dark:text-gray-400 ${
+                ["Discord", "Bluesky"].includes(item.name) ? `w-5` : `w-6`
+              }`}
+              rel={item.hasOwnProperty('me') && item.me ? 'me' : null}
+            >
+              <span class="sr-only">{item.name}</span>
+              <Icon name={item.name} aria-hidden="true" />
+            </a>
+          ))
+        }
+      </div>
+      <p
+        class="mt-8 text-sm text-gray-600 font-mono text-center md:text-left md:mt-0 md:order-1 dark:text-white"
+      >
+        &copy; {new Date().getFullYear()}
+        {" "}
+        {COPYRIGHT_HOLDER}
+      </p>
+    </div>
+  </div>
+</footer>

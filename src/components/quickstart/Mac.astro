@@ -1,0 +1,127 @@
+---
+import Terminal from "@components/Terminal.astro"
+import Tabs from "@components/Tabs.astro"
+import CommunityCTA from "./CommunityCTA.astro"
+import Examples from "./Examples.astro"
+
+export interface Props {
+  latestVersion: string
+}
+
+const { latestVersion } = Astro.props
+---
+
+<div class="prose dark:prose-invert">
+  <p class="text-gray-600 mb-16 dark:text-slate-400">
+    We’ll use OrbStack since it’s the simplest of <a
+      href="https://docs.ddev.com/en/stable/users/install/docker-installation/#macos"
+      target="_blank"
+      >several options</a
+    >. OrbStack is not free for professional use, but several other options are open-source and free to use.
+  </p>
+
+  <h2 class="text-3xl mt-24">
+    <small class="block font-mono text-xs text-gray-500">1/4</small>Install OrbStack Docker Provider
+  </h2>
+</div>
+
+<Tabs order={["Homebrew", "Download"]}>
+  <Fragment slot="Homebrew">
+    <div class="prose py-5 dark:prose-invert">
+      <p>
+        With <a href="https://brew.sh" target="_blank">Homebrew</a> installed, you
+        can install OrbStack with one command:
+      </p>
+      <Terminal code={`→ brew install orbstack docker`} />
+    </div>
+  </Fragment>
+  <Fragment slot="Download">
+    <div class="prose py-5 dark:prose-invert">
+      <p>
+        Download and run the <a
+          href="https://orbstack.dev/download"
+          target="_blank">OrbStack installer</a
+        >.
+      </p>
+    </div>
+  </Fragment>
+</Tabs>
+
+<div class="prose dark:prose-invert">
+  <p>
+    Launch OrbStack, accept the license agreement.
+  </p>
+
+  <p>Confirm that you now have a Docker provider:</p>
+  <Terminal code={`→ docker version`} />
+
+  <h2 class="text-3xl mt-24">
+    <small class="block font-mono text-xs text-gray-500">2/4</small>Install DDEV
+  </h2>
+</div>
+
+<Tabs order={["Homebrew", "Install Script"]}>
+  <Fragment slot="Homebrew">
+    <div class="prose py-5 dark:prose-invert">
+      <Terminal code={`→ brew install ddev/ddev/ddev`} />
+    </div>
+  </Fragment>
+  <Fragment slot="Install Script">
+    <div class="prose py-5 dark:prose-invert">
+      <Terminal
+        code={`→ curl -fsSL https://ddev.com/install.sh | bash`}
+      />
+    </div>
+  </Fragment>
+</Tabs>
+
+
+<div class="prose dark:prose-invert">
+  <p>Confirm that DDEV is installed: 🎉</p>
+  <Terminal code={`→ ddev -v\nddev version ${latestVersion}`} />
+
+  <h2 class="text-3xl mt-24">
+    <small class="block font-mono text-xs text-gray-500">3/4</small>Run <code>mkcert -install</code>
+  </h2>
+
+  <p>Running <code>mkcert -install</code> is a one-time operation. It allows your browser to trust the HTTPS/TLS certificates served by DDEV.</p>
+  <Terminal code={`→ mkcert -install
+Created a new local CA 💥
+Sudo password:
+The local CA is now installed in the system trust store! ⚡️
+The local CA is now installed in the Firefox trust store (requires browser restart)! 🦊`} />
+</div>
+
+<Examples itemNumber="4/4" terminalType="default" terminalSymbol="→" />
+
+<div class="prose dark:prose-invert">
+  <p></p>
+
+  <p>
+    To <a href="https://docs.ddev.com/en/stable/users/usage/uninstall/" target="_blank">uninstall</a> DDEV, first clean up its Docker bits and delete its files from
+    your system:
+  </p>
+
+  <Terminal
+    code={`→ ddev clean --all\n→ ddev hostname --remove-inactive\n→ rm -r ~/.ddev\n→ rm -r ~/.ddev_mutagen_data_directory`}
+  />
+
+  <p>
+    Then remove the <code>ddev</code> binary however you installed it:
+  </p>
+
+  <Tabs order={["Homebrew", "Install Script"]}>
+    <Fragment slot="Homebrew">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal code={`→ brew uninstall ddev`} />
+      </div>
+    </Fragment>
+    <Fragment slot="Install Script">
+      <div class="prose py-5 dark:prose-invert">
+        <Terminal code={`→ rm /usr/local/bin/ddev`} />
+      </div>
+    </Fragment>
+  </Tabs>
+
+  <CommunityCTA />
+</div>
